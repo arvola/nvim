@@ -68,6 +68,7 @@ Plug 'hail2u/vim-css3-syntax'
 Plug 'ap/vim-css-color'
 
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'neovim/tree-sitter-vim', {'do': 'make'}
 
 " Git
 Plug 'lewis6991/gitsigns.nvim'

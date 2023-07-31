@@ -3,6 +3,9 @@ require'nvim-treesitter.configs'.setup {
     ensure_installed = {
         "lua", "typescript", "javascript", "bash", "css", "vim", "yaml"
     },
+    sync_install = false,
+    auto_install = true,
+    ignore_install = {},
 
     highlight = {
         -- `false` will disable the whole extension
