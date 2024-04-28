@@ -20,6 +20,5 @@ vim.opt.hlsearch=true
 
 -- Other
 vim.opt.wildmenu=true
-vim.opt.lazyredraw=true
 vim.opt.showmatch=true
-
+vim.g.vim_markdown_folding_disabled=true

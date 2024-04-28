@@ -2,6 +2,7 @@ local function lsp_keys(bufnr)
 	local function map(key, cmd, des)
 		vim.keymap.set("n", key, cmd, { desc = des, buffer = bufnr })
 	end
+	local cmp = require("cmp")
 
 	local leaders = {
 		{ "d", "<cmd>Lspsaga goto_definition<cr>", "Definition" },
@@ -16,7 +17,7 @@ local function lsp_keys(bufnr)
 	end
 
 	local keys = {
-		{ "<C-q>", "<cmd>Lspsaga hover_doc", "Hover Doc" },
+		{ "<C-q>", "<cmd>Lspsaga hover_doc<cr>", "Hover Doc" },
 		{ "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", "Diag Prev" },
 		{ "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>", "Diag Next" },
 	}
@@ -32,13 +33,25 @@ return {
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 			"folke/which-key.nvim",
+			"b0o/schemastore.nvim",
 		},
 		opts = {
-			setup = {},
+			setup = {
+				jsonls = function(server, server_opts)
+					server_opts.settings = {
+						json = {
+							schemas = require("schemastore").json.schemas(),
+							validate = { enable = true },
+						},
+					}
+					require("lspconfig").jsonls.setup(server_opts)
+				end,
+			},
 			servers = {
 				cssls = {},
-				jsonls = {},
-				tsserver = {},
+				vtsls = {},
+                jsonls = {},
+				html = {},
 				lua_ls = {
 					settings = {
 						Lua = {
@@ -113,10 +126,8 @@ return {
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
-			"hrsh7th/cmp-nvim-lsp-signature-help",
 			"quangnguyen30192/cmp-nvim-ultisnips",
 		},
-		---@param opts cmp.ConfigSchema
 		opts = function(_, opts)
 			local cmp = require("cmp")
 			opts.snippet = {
@@ -166,14 +177,14 @@ return {
 					name = "nvim_lsp",
 				}, -- { name = 'vsnip' }, -- For vsnip users.
 				{
+					name = "path",
+				},
+				{
 					name = "ultisnips",
 				}, -- For ultisnips users.
 			}, {
 				{
 					name = "buffer",
-				},
-				{
-					name = "nvim_lsp_signature_help",
 				},
 			})
 		end,
@@ -198,6 +209,24 @@ return {
 					},
 				}),
 			})
+
+			-- gray
+			vim.api.nvim_set_hl(0, "CmpItemAbbrDeprecated", { bg = "NONE", strikethrough = true, fg = "#808080" })
+			-- blue
+			vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", { bg = "NONE", fg = "#569CD6" })
+			vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { link = "CmpIntemAbbrMatch" })
+			-- light blue
+			vim.api.nvim_set_hl(0, "CmpItemKindVariable", { bg = "NONE", fg = "#9CDCFE" })
+			vim.api.nvim_set_hl(0, "CmpItemKindInterface", { link = "CmpItemKindVariable" })
+			vim.api.nvim_set_hl(0, "CmpItemKindText", { link = "CmpItemKindVariable" })
+			-- pink
+			vim.api.nvim_set_hl(0, "CmpItemKindFunction", { bg = "NONE", fg = "#C586C0" })
+			vim.api.nvim_set_hl(0, "CmpItemKindMethod", { link = "CmpItemKindFunction" })
+			-- front
+			vim.api.nvim_set_hl(0, "CmpItemKindKeyword", { bg = "NONE", fg = "#D4D4D4" })
+			vim.api.nvim_set_hl(0, "CmpItemKindProperty", { link = "CmpItemKindKeyword" })
+			vim.api.nvim_set_hl(0, "CmpItemKindUnit", { link = "CmpItemKindKeyword" })
+			vim.api.nvim_set_hl(0, "LspSignatureActiveParameter", { bg = "#113A5C" })
 		end,
 	},
 
